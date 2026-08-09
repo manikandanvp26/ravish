@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎂 Happy Birthday RAVISHNU - 21!</title>
+
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+    </script>
+
+    <style>
+        /* ----- Reset & Base ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: #0a0a1a;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+        }
+
+        /* ----- Three.js Canvas Container ----- */
+        #three-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* ----- UI Overlay ----- */
+        #ui-overlay {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        #ui-overlay>* {
+            pointer-events: auto;
+        }
+
+        /* ----- Main Birthday Card (glass) ----- */
+        .birthday-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            padding: 40px 50px 50px;
+            text-align: center;
+            max-width: 620px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .birthday-card:hover {
+            transform: translate(-50%, -50%) scale(1.01);
+        }
+
+        .birthday-card .greeting {
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 215, 0, 0.9);
+            font-weight: 300;
+            margin-bottom: 8px;
+        }
+        .birthday-card h1 {
+            font-size: 3.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f7971e, #ffd200, #f7971e);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            margin-bottom: 4px;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+        .birthday-card .sub {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        .birthday-card .message {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            font-weight: 300;
+            max-width: 420px;
+            margin: 0 auto 24px;
+            min-height: 3.4em;
+        }
+        .birthday-card .message .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: #ffd700;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* ----- Action Buttons ----- */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .actions button {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .actions button:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        }
+        .actions button:active {
+            transform: scale(0.95);
+        }
+        .actions .btn-pink {
+            background: linear-gradient(135deg, #ff6b8a, #ee2d5a);
+            color: #fff;
+            border-color: transparent;
+        }
+        .actions .btn-pink:hover {
+            box-shadow: 0 8px 30px rgba(238, 45, 90, 0.4);
+        }
+
+        /* ----- Age & DOB Section ----- */
+        .age-section {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .age-section .dob-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        .age-section .dob-value {
+            color: #ffd700;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .age-section .age-result {
+            color: #ffd700;
+            font-size: 1.1rem;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 4px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        /* ----- Confetti Canvas ----- */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* ----- Floating Balloons ----- */
+        .balloon-ui {
+            position: absolute;
+            font-size: 2.8rem;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            filter: drop-shadow(0 8px 20px rgba(255, 100, 150, 0.3));
+            z-index: 8;
+            pointer-events: auto;
+            animation: floatBalloon 6s ease-in-out infinite alternate;
+        }
+        .balloon-ui:hover {
+            transform: scale(1.25) rotate(-6deg);
+        }
+        .balloon-ui:active {
+            transform: scale(0.8);
+        }
+        .balloon-ui.popped {
+            animation: none;
+            transform: scale(0);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        @keyframes floatBalloon {
+            0% {
+                transform: translateY(0px) rotate(-2deg);
+            }
+            100% {
+                transform: translateY(-32px) rotate(2deg);
+            }
+        }
+
+        .balloon-1 {
+            top: 8%;
+            left: 6%;
+            animation-delay: 0s;
+            font-size: 3.2rem;
+        }
+        .balloon-2 {
+            bottom: 12%;
+            right: 5%;
+            animation-delay: 1.2s;
+            font-size: 3.8rem;
+        }
+        .balloon-3 {
+            top: 18%;
+            right: 10%;
+            animation-delay: 2.4s;
+            font-size: 2.6rem;
+        }
+        .balloon-4 {
+            bottom: 22%;
+            left: 8%;
+            animation-delay: 0.6s;
+            font-size: 3rem;
+        }
+
+        /* ----- Responsive ----- */
+        @media (max-width: 600px) {
+            .birthday-card {
+                padding: 28px 20px 34px;
+                border-radius: 28px;
+                max-width: 94%;
+            }
+            .birthday-card h1 {
+                font-size: 2.6rem;
+            }
+            .birthday-card .greeting {
+                font-size: 0.9rem;
+            }
+            .birthday-card .message {
+                font-size: 0.95rem;
+                min-height: 2.8em;
+            }
+            .actions button {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+            }
+            .balloon-ui {
+                font-size: 2rem !important;
+            }
+            .balloon-1 {
+                top: 4%;
+                left: 2%;
+            }
+            .balloon-2 {
+                bottom: 6%;
+                right: 2%;
+            }
+            .balloon-3 {
+                display: none;
+            }
+            .balloon-4 {
+                bottom: 14%;
+                left: 2%;
+                font-size: 2.2rem !important;
+            }
+            .age-section {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        /* ----- Toast notification ----- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(12px);
+            padding: 14px 32px;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: 400;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast span {
+            margin-right: 10px;
+        }
+
+        .credit {
+            position: fixed;
+            bottom: 16px;
+            right: 20px;
+            z-index: 15;
+            color: rgba(255, 255, 255, 0.12);
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            pointer-events: none;
+            font-weight: 300;
+        }
+
+        /* ===== OPENING CELEBRATION OVERLAY ===== */
+        #opening-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 10, 26, 0.92);
+            backdrop-filter: blur(8px);
+            opacity: 1;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+            /* allow clicks to pass after fade */;
+        }
+        #opening-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #opening-overlay .big-text {
+            font-size: 5.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f7971e, #ffd200, #f7971e);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 1.8s linear infinite, popIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transform: scale(0.6);
+            text-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+        }
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        #opening-overlay .sub-text {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 12px;
+            letter-spacing: 3px;
+            font-weight: 300;
+            animation: fadeUp 1.2s ease 0.4s both;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        #opening-overlay .age-badge {
+            margin-top: 18px;
+            font-size: 1.5rem;
+            background: rgba(255, 215, 0, 0.15);
+            padding: 8px 32px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+            animation: fadeUp 1.2s ease 0.7s both;
+        }
+        @media (max-width: 600px) {
+            #opening-overlay .big-text {
+                font-size: 3.2rem;
+            }
+            #opening-overlay .sub-text {
+                font-size: 1.3rem;
+            }
+            #opening-overlay .age-badge {
+                font-size: 1.1rem;
+                padding: 6px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Three.js Container -->
+    <div id="three-container"></div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"><span>🎉</span> <span id="toast-msg">Wish sent!</span></div>
+
+    <!-- ===== OPENING CELEBRATION OVERLAY ===== -->
+    <div id="opening-overlay">
+        <div class="big-text">🎂 RAVISHNU</div>
+        <div class="sub-text">✨ Happy 21st Birthday! ✨</div>
+        <div class="age-badge">🥳 Born on 12/08/2005</div>
+    </div>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+
+        <!-- Floating Balloons -->
+        <div class="balloon-ui balloon-1">🎈</div>
+        <div class="balloon-ui balloon-2">🎈</div>
+        <div class="balloon-ui balloon-3">🎈</div>
+        <div class="balloon-ui balloon-4">🎈</div>
+
+        <!-- Birthday Card -->
+        <div class="birthday-card">
+            <div class="greeting">🎂 Happy Birthday</div>
+            <h1>RAVISHNU!</h1>
+            <div class="sub">✨ Born on 12 / 08 / 2005 ✨</div>
+
+            <div class="message" id="typing-message">
+                <span id="msg-text"></span><span class="cursor"></span>
+            </div>
+
+            <div class="actions">
+                <button class="btn-pink" id="btn-confetti">🎊 Celebrate!</button>
+            </div>
+
+            <!-- Age & DOB display -->
+            <div class="age-section">
+                <span class="dob-label">🎂 Age</span>
+                <span class="age-result" id="age-result">🎂 21 years</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="credit">🎈 RAVISHNU · 3D Birthday</div>
+
+    <script>
+        // ============================================================
+        //  1. THREE.JS — 3D Birthday Cake & Scene
+        // ============================================================
+        (function initThree() {
+            const container = document.getElementById('three-container');
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a1a);
+
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(4, 3, 8);
+            camera.lookAt(0, 1, 0);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            container.appendChild(renderer.domElement);
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0x404060, 0.5);
+            scene.add(ambientLight);
+
+            const mainLight = new THREE.DirectionalLight(0xffeedd, 1.2);
+            mainLight.position.set(5, 10, 7);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 1024;
+            mainLight.shadow.mapSize.height = 1024;
+            scene.add(mainLight);
+
+            const fillLight = new THREE.DirectionalLight(0x8888ff, 0.4);
+            fillLight.position.set(-4, 3, -5);
+            scene.add(fillLight);
+
+            const rimLight = new THREE.DirectionalLight(0xffaa66, 0.6);
+            rimLight.position.set(-2, 1, 6);
+            scene.add(rimLight);
+
+            const pointLight = new THREE.PointLight(0xffd700, 0.5, 10);
+            pointLight.position.set(0, 3.5, 0);
+            scene.add(pointLight);
+
+            // Floor (shadow catcher)
+            const floorGeo = new THREE.PlaneGeometry(12, 12);
+            const floorMat = new THREE.ShadowMaterial({
+                opacity: 0.25,
+                color: 0x000000,
+                transparent: true,
+            });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = -0.02;
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            // --- Build the Cake ---
+            const cakeGroup = new THREE.Group();
+
+            const layerColors = [0xe67e22, 0xf1c40f, 0xe74c3c];
+            const layerHeights = [0.5, 0.45, 0.4];
+            const layerRadii = [1.6, 1.3, 1.0];
+            const yOffsets = [0, 0.5, 0.95];
+
+            for (let i = 0; i < 3; i++) {
+                const geo = new THREE.CylinderGeometry(layerRadii[i], layerRadii[i], layerHeights[i], 32);
+                const mat = new THREE.MeshStandardMaterial({
+                    color: layerColors[i],
+                    roughness: 0.5,
+                    metalness: 0.05,
+                    emissive: new THREE.Color(layerColors[i]).multiplyScalar(0.05),
+                });
+                const layer = new THREE.Mesh(geo, mat);
+                layer.position.y = yOffsets[i] + layerHeights[i] / 2;
+                layer.castShadow = true;
+                layer.receiveShadow = true;
+                cakeGroup.add(layer);
+
+                if (i < 2) {
+                    const ringGeo = new THREE.TorusGeometry(layerRadii[i] - 0.05, 0.08, 16, 40);
+                    const ringMat = new THREE.MeshStandardMaterial({
+                        color: 0xfff5e6,
+                        roughness: 0.8,
+                        metalness: 0.0,
+                    });
+                    const ring = new THREE.Mesh(ringGeo, ringMat);
+                    ring.position.y = yOffsets[i] + layerHeights[i];
+                    ring.rotation.x = Math.PI / 2;
+                    ring.scale.x = 1.02;
+                    ring.scale.z = 1.02;
+                    cakeGroup.add(ring);
+                }
+            }
+
+            // Icing drips
+            const dripMat = new THREE.MeshStandardMaterial({ color: 0xfff5e6, roughness: 0.7 });
+            for (let i = 0; i < 14; i++) {
+                const angle = (i / 14) * Math.PI * 2 + Math.random() * 0.2;
+                const radius = 0.98 + Math.random() * 0.08;
+                const drip = new THREE.Mesh(new THREE.SphereGeometry(0.07 + Math.random() * 0.04, 6), dripMat);
+                drip.position.set(
+                    Math.cos(angle) * radius,
+                    1.35 + Math.random() * 0.06,
+                    Math.sin(angle) * radius
+                );
+                cakeGroup.add(drip);
+            }
+
+            // Candles
+            const candleMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3, metalness: 0.0 });
+            const candleMatStrip = new THREE.MeshStandardMaterial({ color: 0xff6b6b, roughness: 0.5 });
+            const flameMat = new THREE.MeshStandardMaterial({
+                color: 0xffaa00,
+                emissive: 0xff6600,
+                emissiveIntensity: 2.0,
+                transparent: true,
+                opacity: 0.9,
+            });
+            const flameMatInner = new THREE.MeshStandardMaterial({
+                color: 0xffff88,
+                emissive: 0xffdd44,
+                emissiveIntensity: 3.0,
+                transparent: true,
+                opacity: 0.8,
+            });
+
+            const candlePositions = [
+                [-0.35, 1.4, -0.25],
+                [0.35, 1.4, -0.25],
+                [0, 1.45, 0.35],
+                [-0.25, 1.4, 0.3],
+                [0.25, 1.4, 0.3],
+            ];
+
+            const flames = [];
+
+            candlePositions.forEach((pos, idx) => {
+                const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 0.35, 8), candleMat);
+                candle.position.set(pos[0], pos[1] + 0.175, pos[2]);
+                candle.castShadow = true;
+                cakeGroup.add(candle);
+
+                const strip = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.075, 0.04, 8), candleMatStrip);
+                strip.position.set(pos[0], pos[1] + 0.1, pos[2]);
+                cakeGroup.add(strip);
+
+                const flame = new THREE.Mesh(new THREE.SphereGeometry(0.075, 8, 8), flameMat);
+                flame.position.set(pos[0], pos[1] + 0.38, pos[2]);
+                flame.scale.y = 1.4;
+                cakeGroup.add(flame);
+
+                const flameInner = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 6), flameMatInner);
+                flameInner.position.set(pos[0], pos[1] + 0.41, pos[2]);
+                flameInner.scale.y = 1.6;
+                cakeGroup.add(flameInner);
+
+                flames.push({ outer: flame, inner: flameInner, baseY: pos[1] + 0.38 });
+            });
+
+            // Sparkles
+            const sparkleMat = new THREE.PointsMaterial({
+                color: 0xffdd44,
+                size: 0.04,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+            });
+            const sparklePositions = [];
+            for (let i = 0; i < 60; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const r = 1.2 + Math.random() * 1.0;
+                const y = Math.random() * 1.8;
+                sparklePositions.push(Math.cos(theta) * r, y, Math.sin(theta) * r);
+            }
+            const sparkleGeo = new THREE.BufferGeometry();
+            sparkleGeo.setAttribute('position', new THREE.Float32BufferAttribute(sparklePositions, 3));
+            const sparkles = new THREE.Points(sparkleGeo, sparkleMat);
+            cakeGroup.add(sparkles);
+
+            scene.add(cakeGroup);
+
+            // Stars background
+            const starsGeo = new THREE.BufferGeometry();
+            const starsCount = 400;
+            const starsPos = new Float32Array(starsCount * 3);
+            for (let i = 0; i < starsCount * 3; i++) {
+                starsPos[i] = (Math.random() - 0.5) * 30;
+            }
+            starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+            const starsMat = new THREE.PointsMaterial({
+                color: 0x8888ff,
+                size: 0.04,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending,
+            });
+            const stars = new THREE.Points(starsGeo, starsMat);
+            stars.position.y = 2;
+            scene.add(stars);
+
+            // Glow ring
+            const glowRingGeo = new THREE.TorusGeometry(2.2, 0.02, 16, 60);
+            const glowRingMat = new THREE.MeshBasicMaterial({
+                color: 0xffaa44,
+                transparent: true,
+                opacity: 0.15,
+                blending: THREE.AdditiveBlending,
+            });
+            const glowRing = new THREE.Mesh(glowRingGeo, glowRingMat);
+            glowRing.position.y = 0.2;
+            glowRing.rotation.x = Math.PI / 2;
+            scene.add(glowRing);
+
+            // Mouse control
+            let mouseX = 0,
+                mouseY = 0;
+            let targetRotX = 0,
+                targetRotY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+                targetRotX = mouseY * 0.15;
+                targetRotY = mouseX * 0.3;
+            });
+
+            // Animation loop
+            let time = 0;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                time += 0.01;
+
+                cakeGroup.rotation.x += (targetRotX - cakeGroup.rotation.x) * 0.04;
+                cakeGroup.rotation.y += (targetRotY - cakeGroup.rotation.y) * 0.04;
+
+                if (Math.abs(mouseX) < 0.05 && Math.abs(mouseY) < 0.05) {
+                    cakeGroup.rotation.y += 0.003;
+                }
+
+                cakeGroup.position.y = Math.sin(time * 0.6) * 0.04;
+
+                flames.forEach((f, i) => {
+                    const flicker = 0.85 + Math.sin(time * 12 + i * 2.3) * 0.15;
+                    const flickerY = 0.9 + Math.sin(time * 14 + i * 1.7) * 0.1;
+                    f.outer.scale.set(flicker, 1.3 * flickerY, flicker);
+                    f.inner.scale.set(flicker * 0.9, 1.5 * flickerY * 0.9, flicker * 0.9);
+                    f.outer.position.y = f.baseY + Math.sin(time * 10 + i * 1.3) * 0.015;
+                    f.inner.position.y = f.baseY + 0.03 + Math.sin(time * 10 + i * 1.3) * 0.015;
+                });
+
+                stars.rotation.y += 0.0003;
+                glowRing.scale.setScalar(1 + Math.sin(time * 0.8) * 0.02);
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                const w = window.innerWidth,
+                    h = window.innerHeight;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            });
+
+            window.__cakeGroup = cakeGroup;
+        })();
+
+
+        // ============================================================
+        //  2. CONFETTI SYSTEM (Canvas)
+        // ============================================================
+        (function initConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            let W, H;
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const pieces = [];
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6bff', '#ff9f43', '#00d2d3', '#f368e0'];
+
+            class ConfettiPiece {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * W;
+                    this.y = Math.random() * H - H;
+                    this.w = 6 + Math.random() * 8;
+                    this.h = 4 + Math.random() * 6;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotSpeed = (Math.random() - 0.5) * 0.04;
+                    this.vx = (Math.random() - 0.5) * 1.8;
+                    this.vy = 1.2 + Math.random() * 2.2;
+                    this.gravity = 0.04 + Math.random() * 0.02;
+                    this.opacity = 0.8 + Math.random() * 0.2;
+                    this.life = 1;
+                    this.decay = 0.001 + Math.random() * 0.002;
+                    this.active = true;
+                    this.shape = Math.random() > 0.5 ? 'rect' : 'circle';
+                }
+                update() {
+                    this.x += this.vx + Math.sin(this.rotation) * 0.2;
+                    this.y += this.vy;
+                    this.vy += this.gravity;
+                    this.rotation += this.rotSpeed;
+                    this.life -= this.decay;
+                    if (this.life < 0 || this.y > H + 30) {
+                        this.active = false;
+                    }
+                }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.globalAlpha = this.life * this.opacity;
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation);
+                    ctx.fillStyle = this.color;
+                    if (this.shape === 'rect') {
+                        ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.w / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            let isRunning = false;
+            let animationId = null;
+
+            function burstConfetti(count = 180, x = null, y = null) {
+                const centerX = x !== null ? x : W / 2;
+                const centerY = y !== null ? y : H / 2;
+                for (let i = 0; i < count; i++) {
+                    const p = new ConfettiPiece();
+                    p.x = centerX + (Math.random() - 0.5) * W * 0.5;
+                    p.y = centerY + (Math.random() - 0.5) * H * 0.4;
+                    p.vx = (Math.random() - 0.5) * 8;
+                    p.vy = -5 - Math.random() * 6;
+                    p.gravity = 0.06 + Math.random() * 0.04;
+                    p.life = 0.8 + Math.random() * 0.4;
+                    p.decay = 0.003 + Math.random() * 0.003;
+                    pieces.push(p);
+                }
+                if (!isRunning) {
+                    isRunning = true;
+                    loop();
+                }
+            }
+
+            function loop() {
+                ctx.clearRect(0, 0, W, H);
+                let alive = false;
+                for (let i = pieces.length - 1; i >= 0; i--) {
+                    const p = pieces[i];
+                    p.update();
+                    if (p.active) {
+                        p.draw(ctx);
+                        alive = true;
+                    } else {
+                        pieces.splice(i, 1);
+                    }
+                }
+                if (alive || pieces.length > 0) {
+                    animationId = requestAnimationFrame(loop);
+                } else {
+                    isRunning = false;
+                    ctx.clearRect(0, 0, W, H);
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                        animationId = null;
+                    }
+                }
+            }
+
+            window.burstConfetti = burstConfetti;
+
+            // Initial burst on load (will be triggered after opening overlay)
+        })();
+
+
+        // ============================================================
+        //  3. OPENING CELEBRATION EFFECTS
+        // ============================================================
+        (function initOpeningCelebration() {
+            const overlay = document.getElementById('opening-overlay');
+
+            // 1. Burst confetti repeatedly during overlay
+            let confettiInterval = setInterval(() => {
+                window.burstConfetti(60 + Math.floor(Math.random() * 80));
+            }, 400);
+
+            // 2. Also burst from random positions around the screen
+            let randomBurstInterval = setInterval(() => {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                window.burstConfetti(30, x, y);
+            }, 300);
+
+            // 3. After 3.5 seconds, hide overlay and do a final mega burst
+            setTimeout(() => {
+                // Stop the intervals
+                clearInterval(confettiInterval);
+                clearInterval(randomBurstInterval);
+
+                // Fade out overlay
+                overlay.classList.add('hidden');
+
+                // Mega final burst
+                setTimeout(() => {
+                    window.burstConfetti(200);
+                    setTimeout(() => window.burstConfetti(150), 300);
+                    setTimeout(() => window.burstConfetti(100), 600);
+                    showToast('🎂 Happy 21st Birthday RAVISHNU! 🎉');
+                }, 400);
+
+                // Also start the typing message (it may have been delayed)
+            }, 3500);
+        })();
+
+
+        // ============================================================
+        //  4. TYPING MESSAGE (personalized for RAVISHNU)
+        // ============================================================
+        (function initTyping() {
+            const el = document.getElementById('msg-text');
+            const fullText = "Wishing you, RAVISHNU, a day filled with joy, laughter, and all the love in the world. You deserve the best! 🥳✨";
+            let index = 0;
+            let isDeleting = false;
+
+            // Delay start until after opening overlay
+            setTimeout(() => {
+                function type() {
+                    if (!isDeleting) {
+                        if (index < fullText.length) {
+                            el.textContent = fullText.substring(0, index + 1);
+                            index++;
+                            setTimeout(type, 30 + Math.random() * 20);
+                        } else {
+                            setTimeout(() => {
+                                isDeleting = true;
+                                setTimeout(type, 800);
+                            }, 4000);
+                        }
+                    } else {
+                        if (index > 0) {
+                            el.textContent = fullText.substring(0, index);
+                            index--;
+                            setTimeout(type, 15 + Math.random() * 10);
+                        } else {
+                            isDeleting = false;
+                            setTimeout(type, 500);
+                        }
+                    }
+                }
+                type();
+            }, 3800); // wait for overlay to finish
+        })();
+
+
+        // ============================================================
+        //  5. INTERACTIVE BALLOONS (pop on click)
+        // ============================================================
+        document.querySelectorAll('.balloon-ui').forEach((b) => {
+            b.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (this.classList.contains('popped')) return;
+                this.classList.add('popped');
+                const rect = this.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                window.burstConfetti(40, cx, cy);
+                showToast('🎈 Pop! ✨');
+                setTimeout(() => { this.style.display = 'none'; }, 500);
+            });
+        });
+
+
+        // ============================================================
+        //  6. UI ACTIONS
+        // ============================================================
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+
+        // Celebrate! button
+        document.getElementById('btn-confetti').addEventListener('click', () => {
+            window.burstConfetti(250);
+            showToast('🎊 Celebration time for RAVISHNU! 🎉');
+        });
+
+
+        // ============================================================
+        //  7. AGE DISPLAY (already set to 21)
+        // ============================================================
+        // The age is hardcoded in the HTML as "21 years"
+        // And in the overlay as "21 · Born 12/08/2005"
+
+        console.log('🎂 Happy 21st Birthday RAVISHNU! 🥳');
+    </script>
+
+</body>
+</html>
